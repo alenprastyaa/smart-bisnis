@@ -49,7 +49,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const sequelize = new Sequelize(
     process.env.DB_NAME || 'smartbisnis',
     process.env.DB_USER || 'root',
-    process.env.DB_PASSWORD || '',
+    process.env.DB_PASSWORD || 'alen',
     {
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT) || 3306,
