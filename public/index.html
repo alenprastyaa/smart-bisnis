@@ -38,12 +38,12 @@
         .btn-lime:hover { background: #e5ff7e; border-color: #e5ff7e; transform: translateY(-2px); }
         .landing-nav { position: absolute; z-index: 10; top: 0; width: 100%; padding: 22px 0; color: #fff; }
         .brand { display: inline-flex; align-items: center; gap: 11px; color: inherit; font-size: 1.04rem; font-weight: 800; text-decoration: none; }
-        .brand-mark { display: grid; place-items: center; width: 36px; height: 36px; color: var(--ink); background: var(--lime); border-radius: 10px 10px 3px 10px; }
+        .brand-mark { display: block; width: 40px; height: 40px; object-fit: cover; border-radius: 10px 10px 3px 10px; box-shadow: 0 8px 18px rgba(0,0,0,.16); }
         .landing-nav a:not(.btn) { color: rgba(255,255,255,.72); text-decoration: none; font-weight: 600; }
         .landing-nav a:not(.btn):hover { color: #fff; }
         .hero { position: relative; min-height: 790px; overflow: hidden; color: #fff; background: var(--forest); }
-        .hero::before { content: ''; position: absolute; inset: 0; opacity: .16; background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0); background-size: 28px 28px; mask-image: linear-gradient(to right, #000, transparent 75%); }
-        .hero::after { content: ''; position: absolute; width: 680px; height: 680px; right: -280px; top: -260px; border: 120px solid rgba(217,248,95,.12); border-radius: 50%; }
+        .hero::before { content: ''; position: absolute; inset: 0; opacity: .16; background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0); background-size: 28px 28px; mask-image: linear-gradient(to right, #000, transparent 75%); pointer-events: none; }
+        .hero::after { content: ''; position: absolute; width: 680px; height: 680px; right: -280px; top: -260px; border: 120px solid rgba(217,248,95,.12); border-radius: 50%; pointer-events: none; }
         .hero-inner { position: relative; z-index: 1; padding-top: 178px; padding-bottom: 145px; }
         .eyebrow { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 24px; padding: 9px 13px; color: #efffc0; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); border-radius: 999px; font-size: .82rem; font-weight: 700; }
         .pulse { width: 8px; height: 8px; background: var(--lime); border-radius: 50%; box-shadow: 0 0 0 6px rgba(217,248,95,.12); }
@@ -126,7 +126,7 @@
 
         /* Checkout */
         .modal-shell { position: fixed; z-index: 1100; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(9,20,14,.72); backdrop-filter: blur(8px); }
-        .checkout-modal { width: min(920px, 100%); max-height: calc(100vh - 40px); overflow: auto; background: var(--cream); border-radius: 28px; box-shadow: var(--shadow); }
+        .checkout-modal { width: min(920px, 100%); max-height: calc(100vh - 40px); overflow: auto; overscroll-behavior: contain; background: var(--cream); border-radius: 28px; box-shadow: var(--shadow); -webkit-overflow-scrolling: touch; }
         .checkout-grid { display: grid; grid-template-columns: .85fr 1.15fr; }
         .checkout-summary { padding: 40px; color: #fff; background: var(--forest); border-radius: 28px 0 0 28px; }
         .checkout-summary h3 { margin: 70px 0 10px; font-size: 1.7rem; font-weight: 800; }
@@ -136,7 +136,7 @@
         .modal-top h3 { margin: 0; font-weight: 800; }
         .close-button { display: grid; place-items: center; width: 38px; height: 38px; padding: 0; color: var(--ink); background: #eeeade; border: 0; border-radius: 50%; }
         .form-label { color: #4d584f; font-size: .8rem; font-weight: 700; }
-        .form-control, .form-select { min-height: 46px; color: var(--ink); background-color: #fffef9; border: 1px solid #dcdacf; border-radius: 10px; }
+        .form-control, .form-select { min-height: 46px; color: var(--ink); background-color: #fffef9; border: 1px solid #dcdacf; border-radius: 10px; font-size: 16px; }
         .form-control:focus, .form-select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(36,122,82,.1); }
         textarea.form-control { min-height: auto; }
         .bank-box { padding: 16px; margin: 20px 0; color: #33443a; background: #edf4e4; border-radius: 12px; font-size: .86rem; }
@@ -154,6 +154,23 @@
         .login-form { width: min(430px, 100%); }
         .login-form h2 { font-size: 2rem; font-weight: 800; }
         .login-form > p { margin-bottom: 35px; color: var(--muted); }
+        .member-page { min-height: 100vh; background: #f3f4ef; }
+        .member-layout { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; background: #f3f4ef; }
+        .member-sidebar { position: sticky; top: 0; display: flex; flex-direction: column; height: 100vh; padding: 25px 18px; color: #fff; background: #102319; }
+        .member-sidebar .brand { margin: 0 10px 28px; }
+        .member-sidebar .buyer-contact { color: rgba(255,255,255,.64); }
+        .member-nav { display: grid; gap: 7px; margin-top: 22px; }
+        .member-main { min-width: 0; padding: 30px 35px 55px; }
+        .member-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+        .member-header h1 { margin: 0; font-size: 1.75rem; font-weight: 800; }
+        .member-header p { margin: 5px 0 0; color: var(--muted); font-size: .87rem; }
+        .member-panel-grid { display: grid; gap: 18px; }
+        .member-card { padding: 24px; background: #fff; border: 1px solid var(--line); border-radius: 18px; }
+        .member-card h3 { margin: 0 0 8px; font-size: 1.05rem; font-weight: 800; }
+        .member-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 18px; }
+        .member-stack { display: grid; gap: 18px; }
+        .prompt-output { min-height: 320px; padding: 18px; white-space: pre-wrap; background: #f8f9f5; border: 1px solid var(--line); border-radius: 14px; font-size: .86rem; line-height: 1.6; }
+        .template-output { min-height: 240px; padding: 18px; white-space: pre-wrap; background: #f8f9f5; border: 1px solid var(--line); border-radius: 14px; font-size: .86rem; line-height: 1.6; }
 
         /* CMS */
         .admin-layout { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; background: #f3f4ef; }
@@ -252,6 +269,9 @@
             .feature-icon { margin-bottom: 30px; }
             .course-wrap, .mentor-grid { grid-template-columns: 1fr; gap: 50px; }
             .mentor-art { min-height: 380px; max-width: 420px; }
+            .member-layout { grid-template-columns: 1fr; }
+            .member-sidebar { position: static; height: auto; }
+            .member-main { padding: 24px 20px 45px; }
             .admin-layout { grid-template-columns: 1fr; }
             .admin-sidebar { position: fixed; z-index: 100; width: 250px; left: -270px; transition: left .25s; box-shadow: var(--shadow); }
             .admin-sidebar.open { left: 0; }
@@ -272,6 +292,8 @@
             .checkout-form { padding: 26px 22px; }
             .login-page { grid-template-columns: 1fr; }
             .login-visual { display: none; }
+            .member-grid { grid-template-columns: 1fr; }
+            .member-header { align-items: flex-start; flex-direction: column; }
             .stats-grid { grid-template-columns: 1fr; }
             .filters { grid-template-columns: 1fr; }
             .admin-user { display: none; }
@@ -292,10 +314,11 @@
     <template v-if="currentPath === '/' && !loading">
         <nav class="landing-nav">
             <div class="container d-flex justify-content-between align-items-center">
-                <a class="brand" href="#"><span class="brand-mark"><i class="fa-solid fa-seedling"></i></span>{{ content.brandName }}</a>
+                <a class="brand" href="#" @click.prevent="scrollToSection('app')"><img class="brand-mark" src="https://img.magnific.com/premium-vector/simplicity-speaks-crafting-effective-elegant-simple-logos-clear-brand-communication_579306-22720.jpg?semt=ais_hybrid&w=740&q=80" alt="Logo brand">{{ content.brandName }}</a>
                 <div class="nav-links d-flex align-items-center gap-4">
-                    <a href="#manfaat">Manfaat</a><a href="#kelas">Kurikulum</a><a href="#mentor">Mentor</a>
-                    <a class="btn btn-sm btn-lime" href="#kelas">Lihat kelas</a>
+                    <a href="#manfaat" @click.prevent="scrollToSection('manfaat')">Manfaat</a><a href="#kelas" @click.prevent="scrollToSection('kelas')">Kurikulum</a><a href="#mentor" @click.prevent="scrollToSection('mentor')">Mentor</a>
+                    <a href="/login" @click.prevent="navigate('/login')">Login</a>
+                    <a class="btn btn-sm btn-lime" href="#kelas" @click.prevent="scrollToSection('kelas')">Lihat kelas</a>
                 </div>
             </div>
         </nav>
@@ -305,8 +328,8 @@
                 <h1>{{ content.heroTitle }}</h1>
                 <p class="hero-copy">{{ content.heroDescription }}</p>
                 <div class="hero-actions">
-                    <a href="#kelas" class="btn btn-lime">{{ content.primaryCta }} <i class="fa-solid fa-arrow-right ms-2"></i></a>
-                    <a href="#manfaat" class="btn btn-ghost">{{ content.secondaryCta }}</a>
+                    <a href="#kelas" class="btn btn-lime" @click.prevent="scrollToSection('kelas')">{{ content.primaryCta }} <i class="fa-solid fa-arrow-right ms-2"></i></a>
+                    <a href="#manfaat" class="btn btn-ghost" @click.prevent="scrollToSection('manfaat')">{{ content.secondaryCta }}</a>
                 </div>
             </div>
             <div class="hero-card">
@@ -384,13 +407,13 @@
                 </div>
             </div>
         </section>
-        <section class="cta-section"><div class="container"><div class="cta-box"><h2>Ide bagus tidak seharusnya berhenti di catatan.</h2><a href="#kelas" class="btn btn-lime">Mulai eksekusi <i class="fa-solid fa-arrow-right ms-2"></i></a></div></div></section>
-        <footer class="landing-footer"><div class="container"><a class="brand" href="#"><span class="brand-mark"><i class="fa-solid fa-seedling"></i></span>{{ content.brandName }}</a><span>{{ content.footerText }}</span><a href="/login" @click.prevent="navigate('/login')" class="text-white-50 text-decoration-none">Admin</a></div></footer>
+        <section class="cta-section"><div class="container"><div class="cta-box"><h2>Ide bagus tidak seharusnya berhenti di catatan.</h2><a href="#kelas" class="btn btn-lime" @click.prevent="scrollToSection('kelas')">Mulai eksekusi <i class="fa-solid fa-arrow-right ms-2"></i></a></div></div></section>
+        <footer class="landing-footer"><div class="container"><a class="brand" href="#" @click.prevent="scrollToSection('app')"><img class="brand-mark" src="https://img.magnific.com/premium-vector/simplicity-speaks-crafting-effective-elegant-simple-logos-clear-brand-communication_579306-22720.jpg?semt=ais_hybrid&w=740&q=80" alt="Logo brand">{{ content.brandName }}</a><span>{{ content.footerText }}</span><a href="/login" @click.prevent="navigate('/login')" class="text-white-50 text-decoration-none">Admin</a></div></footer>
     </template>
 
     <div class="modal-shell" v-if="showCheckoutModal" @click.self="showCheckoutModal = false">
         <div class="checkout-modal"><div class="checkout-grid">
-            <aside class="checkout-summary"><a class="brand" href="#"><span class="brand-mark"><i class="fa-solid fa-seedling"></i></span>{{ content.brandName }}</a><h3>{{ checkoutProduct ? checkoutProduct.title : 'Produk' }}</h3><div class="discount-badge" v-if="checkoutProduct && hasDiscount(checkoutProduct)"><i class="fa-solid fa-tags"></i>Hemat {{ discountPercent(checkoutProduct) }}%</div><div class="price" v-if="checkoutProduct && hasDiscount(checkoutProduct)"><s>Rp {{ formatPrice(checkoutProduct.originalPrice) }}</s></div><div class="price">Rp {{ formatPrice(checkoutProduct ? checkoutProduct.price : 0) }}</div><p class="text-white-50 small">{{ checkoutProduct && checkoutProduct.description ? checkoutProduct.description : 'Lengkapi data pembeli dan pilih metode pembayaran.' }}</p></aside>
+            <aside class="checkout-summary"><a class="brand" href="#"><img class="brand-mark" src="https://img.magnific.com/premium-vector/simplicity-speaks-crafting-effective-elegant-simple-logos-clear-brand-communication_579306-22720.jpg?semt=ais_hybrid&w=740&q=80" alt="Logo brand">{{ content.brandName }}</a><h3>{{ checkoutProduct ? checkoutProduct.title : 'Produk' }}</h3><div class="discount-badge" v-if="checkoutProduct && hasDiscount(checkoutProduct)"><i class="fa-solid fa-tags"></i>Hemat {{ discountPercent(checkoutProduct) }}%</div><div class="price" v-if="checkoutProduct && hasDiscount(checkoutProduct)"><s>Rp {{ formatPrice(checkoutProduct.originalPrice) }}</s></div><div class="price">Rp {{ formatPrice(checkoutProduct ? checkoutProduct.price : 0) }}</div><p class="text-white-50 small">{{ checkoutProduct && checkoutProduct.description ? checkoutProduct.description : 'Lengkapi data pembeli dan pilih metode pembayaran.' }}</p></aside>
             <div class="checkout-form">
                 <div class="modal-top"><div><small class="text-muted fw-bold">LANGKAH TERAKHIR</small><h3>Data pendaftaran</h3></div><button class="close-button" @click="showCheckoutModal = false"><i class="fa-solid fa-xmark"></i></button></div>
                 <form @submit.prevent="submitCheckout">
@@ -398,6 +421,7 @@
                     <div class="mb-3"><label class="form-label">Nama lengkap</label><input class="form-control" v-model.trim="formCheckout.buyerName" placeholder="Nama Anda" required></div>
                     <div class="mb-3"><label class="form-label">Email aktif</label><input type="email" class="form-control" v-model.trim="formCheckout.buyerEmail" placeholder="nama@email.com" required></div>
                     <div class="mb-3"><label class="form-label">Nomor WhatsApp</label><input type="tel" class="form-control" v-model.trim="formCheckout.buyerWhatsapp" placeholder="08xxxxxxxxxx" required></div>
+                    <div class="mb-3"><label class="form-label">Atas nama rekening pengirim</label><input class="form-control" v-model.trim="formCheckout.transferAccountName" placeholder="Nama pemilik rekening yang transfer" required></div>
                     <div class="mb-3"><label class="form-label">Metode pembayaran</label><select class="form-select" v-model="formCheckout.paymentMethodId" required><option v-for="payment in activePaymentMethods" :key="payment.id" :value="payment.id">{{ payment.name }} · {{ payment.number }} · a.n. {{ payment.owner }}</option></select></div>
                     <div class="bank-box" v-if="selectedPaymentMethod"><i class="fa-solid fa-building-columns me-2"></i> Transfer ke <strong>{{ selectedPaymentMethod.name }} · {{ selectedPaymentMethod.number }}</strong><br><span class="ms-4">a.n. {{ selectedPaymentMethod.owner }}</span><br><span class="ms-4" v-if="selectedPaymentMethod.note">{{ selectedPaymentMethod.note }}</span></div>
                     <div class="mb-3"><label class="form-label">Bukti pembayaran</label><input ref="paymentProofInput" type="file" class="form-control" accept="image/*" @change="onPaymentProofChange" required><div class="field-help">Format gambar, maksimal 5MB.</div><img v-if="paymentProofPreviewUrl" :src="paymentProofPreviewUrl" alt="Preview bukti pembayaran" class="proof-preview"></div>
@@ -408,14 +432,207 @@
     </div>
 
     <div class="login-page" v-if="currentPath === '/login'">
-        <aside class="login-visual"><a class="brand" href="/" @click.prevent="navigate('/')"><span class="brand-mark"><i class="fa-solid fa-seedling"></i></span>Ruang Tumbuh AI</a><div class="login-message"><span>Content management system</span><h1>Kelola bisnis dari satu ruang.</h1><p>Perbarui landing page, pantau performa, dan proses transaksi tanpa berpindah aplikasi.</p></div><small class="text-white-50">Panel internal · akses terbatas</small></aside>
-        <main class="login-form-wrap"><form class="login-form" @submit.prevent="submitLogin"><a class="d-inline-block mb-5 text-decoration-none text-muted" href="/" @click.prevent="navigate('/')"><i class="fa-solid fa-arrow-left me-2"></i>Kembali ke website</a><h2>Selamat datang</h2><p>Masuk untuk melanjutkan ke dashboard.</p><div class="mb-3"><label class="form-label">Username</label><input class="form-control" v-model.trim="formLogin.username" autocomplete="username" required></div><div class="mb-4"><label class="form-label">Password</label><input type="password" class="form-control" v-model="formLogin.password" autocomplete="current-password" required></div><button class="btn btn-brand w-100" :disabled="submitting">{{ submitting ? 'Memeriksa...' : 'Masuk ke dashboard' }}</button></form></main>
+        <aside class="login-visual"><a class="brand" href="/" @click.prevent="navigate('/')"><img class="brand-mark" src="https://img.magnific.com/premium-vector/simplicity-speaks-crafting-effective-elegant-simple-logos-clear-brand-communication_579306-22720.jpg?semt=ais_hybrid&w=740&q=80" alt="Logo Ruang Tumbuh AI">Ruang Tumbuh AI</a><div class="login-message"><span>Content management system</span><h1>Kelola bisnis dari satu ruang.</h1><p>Customer akan menerima akun otomatis lewat email setelah submit order. Akun aktif setelah approval admin.</p></div><small class="text-white-50">Panel internal · akses terbatas</small></aside>
+        <main class="login-form-wrap"><form class="login-form" @submit.prevent="submitLogin"><a class="d-inline-block mb-5 text-decoration-none text-muted" href="/" @click.prevent="navigate('/')"><i class="fa-solid fa-arrow-left me-2"></i>Kembali ke website</a><h2>Selamat datang</h2><p>Masuk sebagai admin atau customer.</p><div class="mb-3"><label class="form-label">Email / Username</label><input class="form-control" v-model.trim="formLogin.username" autocomplete="username" required></div><div class="mb-4"><label class="form-label">Password</label><input type="password" class="form-control" v-model="formLogin.password" autocomplete="current-password" required></div><button class="btn btn-brand w-100" :disabled="submitting">{{ submitting ? 'Memeriksa...' : 'Masuk ke dashboard' }}</button></form></main>
+    </div>
+
+    <div class="member-page" v-if="currentPath === '/member'">
+        <div class="member-layout">
+            <aside class="member-sidebar">
+                <a class="brand" href="#" @click.prevent="switchMemberTab('overview')"><img class="brand-mark" src="https://img.magnific.com/premium-vector/simplicity-speaks-crafting-effective-elegant-simple-logos-clear-brand-communication_579306-22720.jpg?semt=ais_hybrid&w=740&q=80" alt="Logo Member Area">Member Area</a>
+                <div class="px-2">
+                    <div class="buyer-name text-white">{{ member.user.name || authUser.name || 'Member' }}</div>
+                    <div class="buyer-contact mt-1">{{ member.user.email || authUser.email || '-' }}</div>
+                    <div class="mt-3"><span class="status-pill" :class="member.user.isActive ? 'status-APPROVED' : 'status-PENDING'">{{ member.user.isActive ? 'Aktif' : 'Menunggu approval' }}</span></div>
+                </div>
+                <nav class="member-nav admin-nav">
+                    <button class="admin-link" :class="{active: memberTab === 'overview'}" @click="switchMemberTab('overview')"><i class="fa-solid fa-house"></i>Ringkasan</button>
+                    <button class="admin-link" :class="{active: memberTab === 'system'}" @click="switchMemberTab('system')"><i class="fa-solid fa-server"></i>Kebutuhan Sistem</button>
+                    <button class="admin-link" :class="{active: memberTab === 'prompt-menu'}" @click="switchMemberTab('prompt-menu')"><i class="fa-solid fa-wand-magic-sparkles"></i>Prompt Menu</button>
+                    <button class="admin-link" :class="{active: memberTab === 'build'}" @click="switchMemberTab('build')"><i class="fa-solid fa-code"></i>Generate App</button>
+                    <button class="admin-link" :class="{active: memberTab === 'fix'}" @click="switchMemberTab('fix')"><i class="fa-solid fa-screwdriver-wrench"></i>Perbaikan Error</button>
+                    <button class="admin-link" :class="{active: memberTab === 'improve'}" @click="switchMemberTab('improve')"><i class="fa-solid fa-layer-group"></i>Lengkapi Fitur</button>
+                    <button class="admin-link" :class="{active: memberTab === 'profile'}" @click="switchMemberTab('profile')"><i class="fa-solid fa-user-gear"></i>Profil</button>
+                </nav>
+                <div class="sidebar-bottom admin-nav">
+                    <button class="admin-link" @click="navigate('/')"><i class="fa-solid fa-arrow-up-right-from-square"></i>Lihat website</button>
+                    <button class="admin-link text-danger" @click="logout"><i class="fa-solid fa-right-from-bracket"></i>Keluar</button>
+                </div>
+            </aside>
+            <main class="member-main">
+                <header class="member-header">
+                    <div>
+                        <div class="eyebrow text-dark bg-white border mb-2"><span class="pulse"></span>Customer area</div>
+                        <h1>{{ memberTitle }}</h1>
+                        <p>{{ memberSubtitle }}</p>
+                    </div>
+                    <div class="admin-user"><span class="avatar">{{ (member.user.name || authUser.name || 'M').slice(0, 1).toUpperCase() }}</span>{{ member.user.name || authUser.name || 'Member' }}</div>
+                </header>
+                <div class="member-panel-grid">
+                    <section v-if="memberTab === 'overview'">
+                        <div class="member-grid">
+                            <div class="member-stack">
+                                <div class="member-card">
+                                    <h3>Akun Anda</h3>
+                                    <div class="buyer-contact mb-2">{{ member.user.name || '-' }}</div>
+                                    <div class="buyer-contact mb-2">{{ member.user.email || '-' }}</div>
+                                    <span class="status-pill" :class="member.user.isActive ? 'status-APPROVED' : 'status-PENDING'">{{ member.user.isActive ? 'Aktif' : 'Menunggu approval' }}</span>
+                                </div>
+                                <div class="member-card">
+                                    <h3>Info cepat</h3>
+                                    <div class="buyer-contact mb-2">Total transaksi: {{ member.transactions.length }}</div>
+                                    <div class="buyer-contact mb-2">Transaksi disetujui: {{ approvedTransactionsCount }}</div>
+                                    <div class="buyer-contact">Gunakan menu sidebar untuk akses prompt, template, dan profil.</div>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <h3>Produk Anda</h3>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead><tr><th>Produk</th><th>Status</th><th>Nominal</th></tr></thead>
+                                        <tbody>
+                                            <tr v-for="tx in member.transactions" :key="tx.id">
+                                                <td>{{ tx.productTitle }}</td>
+                                                <td><span class="status-pill" :class="'status-' + tx.status">{{ statusLabel(tx.status) }}</span></td>
+                                                <td>Rp {{ formatPrice(tx.amount) }}</td>
+                                            </tr>
+                                            <tr v-if="!member.transactions.length"><td colspan="3" class="text-muted">Belum ada transaksi.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section v-if="memberTab === 'profile'">
+                        <div class="member-card" style="max-width:720px">
+                            <h3>Profil & Password</h3>
+                            <div class="buyer-contact mb-3">Ganti password akun Anda sendiri.</div>
+                            <form @submit.prevent="changePassword">
+                                <div class="mb-3"><label class="form-label">Password saat ini</label><input type="password" class="form-control" v-model="profileForm.currentPassword" required></div>
+                                <div class="mb-3"><label class="form-label">Password baru</label><input type="password" class="form-control" v-model="profileForm.newPassword" required></div>
+                                <div class="mb-3"><label class="form-label">Konfirmasi password baru</label><input type="password" class="form-control" v-model="profileForm.confirmPassword" required></div>
+                                <button class="btn btn-brand" :disabled="submitting">{{ submitting ? 'Menyimpan...' : 'Ganti password' }}</button>
+                            </form>
+                        </div>
+                    </section>
+                    <section v-if="memberTab === 'prompt-menu'">
+                        <div class="member-card">
+                            <h3>Prompting Menu Aplikasi</h3>
+                            <div class="buyer-contact mb-3">Gunakan ini untuk menyuruh ChatGPT membuat daftar menu aplikasi.</div>
+                            <form @submit.prevent="generatePrompt('menu')">
+                                <div class="row g-3">
+                                    <div class="col-md-8"><label class="form-label">Nama aplikasi</label><input class="form-control" v-model.trim="member.forms.menu.appName" placeholder="Contoh: Rental Mobil" required></div>
+                                    <div class="col-md-4 d-flex align-items-end"><button class="btn btn-brand w-100" :disabled="submitting">{{ submitting ? 'Generate...' : 'Generate prompt menu' }}</button></div>
+                                </div>
+                            </form>
+                            <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                                <h3 class="mb-0">Hasil Prompt</h3>
+                                <button class="btn btn-sm btn-outline-secondary" @click="copyPrompt('menu')" :disabled="!member.prompts.menu">Copy</button>
+                            </div>
+                            <div class="prompt-output">{{ member.prompts.menu || 'Hasil prompt menu akan tampil di sini.' }}</div>
+                        </div>
+                    </section>
+                    <section v-if="memberTab === 'build'">
+                        <div class="member-card">
+                            <h3>Template Generate Aplikasi</h3>
+                            <div class="buyer-contact mb-3">Template instruksi untuk membuat aplikasi lengkap. Nama database dibuat otomatis oleh sistem dari nama aplikasi.</div>
+                            <form @submit.prevent="buildTemplate('build')">
+                                <div class="row g-3">
+                                    <div class="col-md-8"><label class="form-label">Nama aplikasi</label><input class="form-control" v-model.trim="member.forms.build.appName" placeholder="Contoh: Rental Mobil" required></div>
+                                    <div class="col-md-4 d-flex align-items-end"><button class="btn btn-brand w-100" type="submit">Buat template instruksi</button></div>
+                                </div>
+                            </form>
+                            <div class="bank-box mt-3" v-if="member.forms.build.appName"><i class="fa-solid fa-database me-2"></i>Setup database MySQL dengan nama <strong>{{ autoDbName(member.forms.build.appName) }}</strong>.</div>
+                            <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                                <h3 class="mb-0">Hasil Template</h3>
+                                <button class="btn btn-sm btn-outline-secondary" @click="copyTemplate('build')" :disabled="!member.templates.build">Copy</button>
+                            </div>
+                            <div class="template-output">{{ member.templates.build || 'Template instruksi build akan tampil di sini.' }}</div>
+                        </div>
+                    </section>
+                    <section v-if="memberTab === 'fix'">
+                        <div class="member-card">
+                            <h3>Template Perbaikan Error</h3>
+                            <div class="buyer-contact mb-3">Instruksi ini bersifat static dan langsung bisa dipakai.</div>
+                            <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                                <h3 class="mb-0">Hasil Template</h3>
+                                <button class="btn btn-sm btn-outline-secondary" @click="copyTemplate('fix')" :disabled="!member.templates.fix">Copy</button>
+                            </div>
+                            <div class="template-output">{{ member.templates.fix }}</div>
+                        </div>
+                    </section>
+                    <section v-if="memberTab === 'improve'">
+                        <div class="member-card">
+                            <h3>Template Lengkapi Fitur</h3>
+                            <div class="buyer-contact mb-3">Instruksi ini bersifat static dan langsung bisa dipakai.</div>
+                            <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                                <h3 class="mb-0">Hasil Template</h3>
+                                <button class="btn btn-sm btn-outline-secondary" @click="copyTemplate('improve')" :disabled="!member.templates.improve">Copy</button>
+                            </div>
+                            <div class="template-output">{{ member.templates.improve }}</div>
+                        </div>
+                    </section>
+                    <section v-if="memberTab === 'system'">
+                        <div class="member-card">
+                            <h3>Kebutuhan Sistem untuk Membuat Aplikasi</h3>
+                            <div class="buyer-contact mb-4">Bagian ini berisi software dan langkah awal yang perlu disiapkan sebelum mulai membuat aplikasi.</div>
+                            <div class="template-output" style="min-height:auto">1. Sistem operasi yang direkomendasikan: Windows 10/11 64-bit atau macOS versi terbaru.
+
+2. Software utama yang perlu diinstal:
+- Visual Studio Code untuk menulis dan mengelola kode.
+- XAMPP untuk menjalankan MySQL secara lokal.
+- Node.js LTS untuk menjalankan backend Node.js.
+- Browser Google Chrome untuk testing aplikasi.
+
+3. Tutorial instal Visual Studio Code:
+- Buka website resmi https://code.visualstudio.com/
+- Klik Download sesuai sistem operasi Anda.
+- Jalankan file installer yang sudah diunduh.
+- Klik Next sampai selesai, lalu centang opsi menambahkan VS Code ke PATH jika tersedia.
+- Setelah selesai, buka VS Code dan install extension dasar seperti:
+  - Prettier
+  - ESLint
+  - Vue Language Features
+
+4. Tutorial instal XAMPP:
+- Buka website resmi https://www.apachefriends.org/
+- Download XAMPP sesuai sistem operasi Anda.
+- Jalankan installer lalu pilih komponen minimal Apache dan MySQL.
+- Selesaikan proses instalasi.
+- Buka XAMPP Control Panel.
+- Jalankan MySQL.
+- Buat database baru melalui phpMyAdmin atau tool database lain sesuai nama database yang diperlukan sistem.
+
+5. Tutorial instal Node.js:
+- Buka website resmi https://nodejs.org/
+- Download versi LTS.
+- Jalankan installer sampai selesai.
+- Setelah terpasang, cek di terminal dengan perintah:
+  - node -v
+  - npm -v
+
+6. Kebutuhan minimum perangkat:
+- RAM minimal 2 GB
+- Storage kosong minimal 10 GB
+- Koneksi internet stabil untuk download package dan dokumentasi
+
+7. Setelah semua siap:
+- Buka project di VS Code
+- Jalankan MySQL dari XAMPP
+- Buat database sesuai nama yang diminta aplikasi
+- Jalankan npm install
+- Jalankan server sesuai instruksi project</div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
     </div>
 
     <div class="admin-layout" v-if="currentPath === '/admin'">
         <aside class="admin-sidebar" :class="{open: sidebarOpen}">
-            <a class="brand" href="#"><span class="brand-mark"><i class="fa-solid fa-seedling"></i></span>Ruang Admin</a>
-            <nav class="admin-nav"><button class="admin-link" :class="{active: adminTab === 'dashboard'}" @click="switchAdminTab('dashboard')"><i class="fa-solid fa-chart-pie"></i>Ringkasan</button><button class="admin-link" :class="{active: adminTab === 'transactions'}" @click="switchAdminTab('transactions')"><i class="fa-solid fa-receipt"></i>Transaksi</button><button class="admin-link" :class="{active: adminTab === 'settings'}" @click="switchAdminTab('settings')"><i class="fa-solid fa-pen-ruler"></i>Konten website</button></nav>
+            <a class="brand" href="#"><img class="brand-mark" src="https://img.magnific.com/premium-vector/simplicity-speaks-crafting-effective-elegant-simple-logos-clear-brand-communication_579306-22720.jpg?semt=ais_hybrid&w=740&q=80" alt="Logo Ruang Admin">Ruang Admin</a>
+            <nav class="admin-nav"><button class="admin-link" :class="{active: adminTab === 'dashboard'}" @click="switchAdminTab('dashboard')"><i class="fa-solid fa-chart-pie"></i>Ringkasan</button><button class="admin-link" :class="{active: adminTab === 'transactions'}" @click="switchAdminTab('transactions')"><i class="fa-solid fa-receipt"></i>Transaksi</button><button class="admin-link" :class="{active: adminTab === 'settings'}" @click="switchAdminTab('settings')"><i class="fa-solid fa-pen-ruler"></i>Konten website</button><button class="admin-link" :class="{active: adminTab === 'profile'}" @click="switchAdminTab('profile')"><i class="fa-solid fa-user-gear"></i>Profil</button></nav>
             <div class="sidebar-bottom admin-nav"><button class="admin-link" @click="openWebsite"><i class="fa-solid fa-arrow-up-right-from-square"></i>Lihat website</button><button class="admin-link text-danger" @click="logout"><i class="fa-solid fa-right-from-bracket"></i>Keluar</button></div>
         </aside>
         <main class="admin-main">
@@ -434,7 +651,7 @@
             <section v-if="adminTab === 'transactions'">
                 <div class="admin-card"><div class="admin-card-head"><div><h3>Daftar transaksi</h3><small class="text-muted">{{ transactions.totalItems || 0 }} transaksi ditemukan</small></div></div>
                     <div class="filters mb-4"><div class="search-control"><i class="fa-solid fa-magnifying-glass"></i><input class="form-control" v-model.trim="txQuery.search" @keyup.enter="fetchTransactions(1)" placeholder="Cari nama, email, atau WhatsApp"></div><select class="form-select" v-model="txQuery.status" @change="fetchTransactions(1)"><option value="">Semua status</option><option value="PENDING">Menunggu</option><option value="APPROVED">Disetujui</option><option value="REJECTED">Ditolak</option></select><button class="btn btn-brand" @click="fetchTransactions(1)">Cari</button></div>
-                    <div class="table-responsive"><table class="table"><thead><tr><th>Pembeli</th><th>Produk</th><th>Pembayaran</th><th>Bukti</th><th>Tanggal</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead><tbody><tr v-for="tx in transactions.data" :key="tx.id"><td><div class="buyer-name">{{ tx.buyerName }}</div><div class="buyer-contact">{{ tx.buyerEmail }}</div><div class="buyer-contact">{{ tx.buyerWhatsapp }}</div></td><td><div class="buyer-name">{{ tx.productTitle || '—' }}</div></td><td><div class="buyer-name">{{ tx.paymentMethod || '—' }}</div><div class="buyer-contact">{{ tx.paymentAccount || '—' }}</div></td><td><a v-if="tx.paymentProofUrl" :href="tx.paymentProofUrl" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Lihat bukti</a><span v-else class="text-muted">—</span></td><td>{{ formatDate(tx.createdAt) }}</td><td class="fw-bold">Rp {{ formatPrice(tx.amount) }}</td><td><span class="status-pill" :class="'status-' + tx.status">{{ statusLabel(tx.status) }}</span></td><td><div class="d-flex gap-1" v-if="tx.status === 'PENDING'"><button class="action-button approve" title="Setujui" @click="updateStatus(tx.id, 'APPROVED')"><i class="fa-solid fa-check"></i></button><button class="action-button reject" title="Tolak" @click="updateStatus(tx.id, 'REJECTED')"><i class="fa-solid fa-xmark"></i></button></div><span v-else class="text-muted">—</span></td></tr><tr v-if="!transactions.data.length"><td colspan="8"><div class="empty-state"><i class="fa-regular fa-folder-open fa-2x mb-3"></i><br>Belum ada transaksi yang sesuai.</div></td></tr></tbody></table></div>
+                    <div class="table-responsive"><table class="table"><thead><tr><th>Pembeli</th><th>Produk</th><th>Pembayaran</th><th>Bukti</th><th>Tanggal</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead><tbody><tr v-for="tx in transactions.data" :key="tx.id"><td><div class="buyer-name">{{ tx.buyerName }}</div><div class="buyer-contact">{{ tx.buyerEmail }}</div><div class="buyer-contact">{{ tx.buyerWhatsapp }}</div><div class="buyer-contact">Transfer a.n. {{ tx.transferAccountName || '—' }}</div></td><td><div class="buyer-name">{{ tx.productTitle || '—' }}</div></td><td><div class="buyer-name">{{ tx.paymentMethod || '—' }}</div><div class="buyer-contact">{{ tx.paymentAccount || '—' }}</div></td><td><a v-if="tx.paymentProofUrl" :href="tx.paymentProofUrl" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary">Lihat bukti</a><span v-else class="text-muted">—</span></td><td>{{ formatDate(tx.createdAt) }}</td><td class="fw-bold">Rp {{ formatPrice(tx.amount) }}</td><td><span class="status-pill" :class="'status-' + tx.status">{{ statusLabel(tx.status) }}</span></td><td><div class="d-flex gap-1" v-if="tx.status === 'PENDING'"><button class="action-button approve" title="Setujui" @click="updateStatus(tx.id, 'APPROVED')"><i class="fa-solid fa-check"></i></button><button class="action-button reject" title="Tolak" @click="updateStatus(tx.id, 'REJECTED')"><i class="fa-solid fa-xmark"></i></button></div><span v-else class="text-muted">—</span></td></tr><tr v-if="!transactions.data.length"><td colspan="8"><div class="empty-state"><i class="fa-regular fa-folder-open fa-2x mb-3"></i><br>Belum ada transaksi yang sesuai.</div></td></tr></tbody></table></div>
                     <div class="pagination-bar" v-if="transactions.totalPages"><span>Halaman {{ transactions.currentPage }} dari {{ transactions.totalPages }}</span><div class="d-flex gap-2"><button class="btn btn-sm btn-outline-secondary" :disabled="transactions.currentPage <= 1" @click="fetchTransactions(transactions.currentPage - 1)">Sebelumnya</button><button class="btn btn-sm btn-outline-secondary" :disabled="transactions.currentPage >= transactions.totalPages" @click="fetchTransactions(transactions.currentPage + 1)">Berikutnya</button></div></div>
                 </div>
             </section>
@@ -448,6 +665,20 @@
                     <template v-if="cmsTab === 'product'"><div class="form-section"><div class="d-flex justify-content-between align-items-center mb-3"><h3 class="form-section-title mb-0">Daftar produk</h3><button class="btn btn-sm btn-brand" @click="openProductModal()"><i class="fa-solid fa-plus me-2"></i>Tambah produk</button></div><div class="table-responsive"><table class="table cms-product-table"><thead><tr><th>Produk</th><th>Harga jual</th><th>Harga coret</th><th>Stok</th><th>Status</th><th>Benefit</th><th>Aksi</th></tr></thead><tbody><tr v-for="(product, index) in cmsSettings.products" :key="product.id || product.clientKey || index"><td class="product-name-cell"><div class="buyer-name">{{ product.title || 'Produk tanpa nama' }}</div><div class="buyer-contact">{{ product.description || 'Tanpa deskripsi' }}</div></td><td>Rp {{ formatPrice(product.price) }}</td><td>{{ Number(product.originalPrice) > Number(product.price) ? `Rp ${formatPrice(product.originalPrice)}` : '—' }}</td><td>{{ Number(product.stock) || 0 }}</td><td><span class="status-pill" :class="product.isActive ? 'status-APPROVED' : 'status-REJECTED'">{{ product.isActive ? 'Aktif' : 'Nonaktif' }}</span></td><td>{{ splitBenefits(product.benefits).length }}</td><td><div class="d-flex gap-1"><button class="action-button approve" title="Edit" @click="openProductModal(product, index)"><i class="fa-solid fa-pen"></i></button><button class="action-button reject" title="Hapus" @click="deleteCmsProduct(product, index)" :disabled="cmsSettings.products.length === 1"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr v-if="!cmsSettings.products.length"><td colspan="7"><div class="empty-state">Belum ada produk.</div></td></tr></tbody></table></div></div><div class="form-section"><div class="d-flex justify-content-between align-items-center mb-3"><h3 class="form-section-title mb-0">Metode pembayaran</h3><button class="btn btn-sm btn-brand" @click="addCmsPayment"><i class="fa-solid fa-plus me-2"></i>Tambah pembayaran</button></div><div class="stack-list"><div class="stack-item" v-for="(payment, index) in cmsSettings.paymentMethods" :key="payment.id || payment.clientKey || index"><div class="stack-head"><strong>Pembayaran {{ index + 1 }}</strong><button class="btn btn-sm btn-outline-danger" @click="removeCmsPayment(index)" :disabled="cmsSettings.paymentMethods.length === 1">Hapus</button></div><div class="row g-3"><div class="col-md-4"><label class="form-label">Nama metode / bank</label><input class="form-control" v-model="payment.name"></div><div class="col-md-4"><label class="form-label">Nomor rekening / akun</label><input class="form-control" v-model="payment.number"></div><div class="col-md-4"><label class="form-label">Status</label><select class="form-select" v-model="payment.isActive"><option :value="true">Aktif</option><option :value="false">Nonaktif</option></select></div><div class="col-md-6"><label class="form-label">Nama pemilik</label><input class="form-control" v-model="payment.owner"></div><div class="col-md-6"><label class="form-label">Catatan</label><input class="form-control" v-model="payment.note" placeholder="Contoh: transfer manual"></div></div></div></div></div></template>
                 </div><aside class="preview-card"><div class="preview-browser"><i></i><i></i><i></i></div><div class="preview-content"><div class="preview-badge">{{ cmsSettings.content.badge }}</div><h2>{{ cmsSettings.content.heroTitle }}</h2><p>{{ cmsSettings.content.heroDescription }}</p><div class="preview-price"><small>{{ cmsPreviewProduct.title || 'Produk' }}</small><strong>Rp {{ formatPrice(cmsPreviewProduct.price) }}</strong></div></div></aside></div>
                 <div class="save-bar"><span class="unsaved" v-if="hasUnsavedChanges"><i class="fa-solid fa-circle me-1"></i>Ada perubahan belum disimpan</span><button class="btn btn-brand px-4" :disabled="submitting || !hasUnsavedChanges" @click="saveSettings">{{ submitting ? 'Menyimpan...' : 'Simpan & terbitkan' }}</button></div>
+            </section>
+
+            <section v-if="adminTab === 'profile'">
+                <div class="admin-card" style="max-width:640px">
+                    <div class="admin-card-head"><div><h3>Profil akun</h3><small class="text-muted">{{ authUser.email || '-' }}</small></div></div>
+                    <div class="mb-3"><label class="form-label">Nama</label><input class="form-control" :value="authUser.name || '-'" disabled></div>
+                    <div class="mb-3"><label class="form-label">Username</label><input class="form-control" :value="authUser.username || '-'" disabled></div>
+                    <form @submit.prevent="changePassword">
+                        <div class="mb-3"><label class="form-label">Password saat ini</label><input type="password" class="form-control" v-model="profileForm.currentPassword" required></div>
+                        <div class="mb-3"><label class="form-label">Password baru</label><input type="password" class="form-control" v-model="profileForm.newPassword" required></div>
+                        <div class="mb-3"><label class="form-label">Konfirmasi password baru</label><input type="password" class="form-control" v-model="profileForm.confirmPassword" required></div>
+                        <button class="btn btn-brand" :disabled="submitting">{{ submitting ? 'Menyimpan...' : 'Ganti password' }}</button>
+                    </form>
+                </div>
             </section>
         </main>
     </div>
@@ -481,12 +712,33 @@ new Vue({
     el: '#app',
     data: {
         currentPath: '/', loading: true, submitting: false, sidebarOpen: false,
+        memberTab: 'overview',
         adminTab: 'dashboard', cmsTab: 'hero', showCheckoutModal: false,
         content: {}, course: { title: '', description: '', price: 0, originalPrice: 0, stock: 0, benefits: '' }, products: [], paymentMethods: [],
-        formCheckout: { productId: null, paymentMethodId: '', buyerName: '', buyerEmail: '', buyerWhatsapp: '', paymentProof: null },
+        formCheckout: { productId: null, paymentMethodId: '', buyerName: '', buyerEmail: '', buyerWhatsapp: '', transferAccountName: '', paymentProof: null },
         paymentProofPreviewUrl: '',
         formLogin: { username: '', password: '' },
+        authUser: {},
+        profileForm: { currentPassword: '', newPassword: '', confirmPassword: '' },
         cmsSettings: { content: {}, products: [], paymentMethods: [] }, savedSettingsSnapshot: '',
+        member: {
+            user: {},
+            transactions: [],
+            forms: {
+                menu: { appName: '' },
+                build: { appName: '' },
+                fix: { appName: '' },
+                improve: { appName: '' },
+                system: { appName: '' }
+            },
+            prompts: { menu: '' },
+            templates: {
+                build: '',
+                fix: 'Jika terjadi error, perbaiki secara penuh file dari kode yang error dan tulis ulang lengkap. Jangan ada kode yang dikurangi dari versi sebelumnya. Pertahankan struktur aplikasi yang sudah ada dan pastikan hasil akhirnya tetap berjalan.',
+                improve: 'Jika menu atau fitur masih kurang lengkap, tambahkan lebih lengkap lagi tanpa mengurangi kode sebelumnya. Jangan gunakan data static. Semua data harus tetap dinamis dari API dan menyesuaikan struktur aplikasi yang sudah dibuat.',
+                system: ''
+            }
+        },
         showProductModal: false, editingProductIndex: null, productModalForm: { id: null, clientKey: '', title: '', description: '', price: 0, originalPrice: 0, stock: 0, benefits: '', isActive: true },
         transactions: { data: [], totalItems: 0, totalPages: 0, currentPage: 1 },
         txQuery: { page: 1, limit: 10, search: '', status: '' },
@@ -495,8 +747,11 @@ new Vue({
     },
     computed: {
         mentorInitials() { return (this.content.mentorName || 'AI').split(' ').slice(0, 2).map(word => word[0]).join('').toUpperCase(); },
-        adminTitle() { return { dashboard: 'Ringkasan bisnis', transactions: 'Kelola transaksi', settings: 'Konten website' }[this.adminTab]; },
-        adminSubtitle() { return { dashboard: 'Pantau performa penjualan kelas Anda.', transactions: 'Verifikasi dan kelola seluruh pesanan masuk.', settings: 'Ubah konten landing page dan terbitkan langsung.' }[this.adminTab]; },
+        adminTitle() { return { dashboard: 'Ringkasan bisnis', transactions: 'Kelola transaksi', settings: 'Konten website', profile: 'Profil akun' }[this.adminTab]; },
+        adminSubtitle() { return { dashboard: 'Pantau performa penjualan kelas Anda.', transactions: 'Verifikasi dan kelola seluruh pesanan masuk.', settings: 'Ubah konten landing page dan terbitkan langsung.', profile: 'Kelola password akun Anda sendiri.' }[this.adminTab]; },
+        memberTitle() { return { overview: 'Ringkasan member', system: 'Kebutuhan sistem', 'prompt-menu': 'Prompt menu aplikasi', build: 'Template generate aplikasi', fix: 'Template perbaikan error', improve: 'Template lengkapi fitur', profile: 'Profil akun' }[this.memberTab] || 'Area Member'; },
+        memberSubtitle() { return { overview: 'Lihat status akun dan riwayat produk yang sudah dibeli.', system: 'Panduan software dan persiapan awal sebelum mulai membuat aplikasi.', 'prompt-menu': 'Bagian ini digunakan untuk generate prompt menu aplikasi.', build: 'Template instruksi untuk membuat aplikasi lengkap.', fix: 'Template instruksi untuk memperbaiki kode yang error.', improve: 'Template instruksi untuk melengkapi fitur aplikasi.', profile: 'Kelola password akun member Anda.' }[this.memberTab] || ''; },
+        approvedTransactionsCount() { return this.member.transactions.filter(item => item.status === 'APPROVED').length; },
         hasUnsavedChanges() { return this.savedSettingsSnapshot && JSON.stringify(this.cmsSettings) !== this.savedSettingsSnapshot; },
         purchasableProducts() { return this.products.filter(item => item.isActive !== false && Number(item.stock) > 0); },
         checkoutProduct() { return this.products.find(item => Number(item.id) === Number(this.formCheckout.productId)) || this.featuredProduct || null; },
@@ -513,13 +768,27 @@ new Vue({
     methods: {
         syncPath() {
             const path = window.location.pathname;
-            if (path === '/admin' && !localStorage.getItem('token')) return this.navigate('/login', true);
-            this.currentPath = ['/login', '/admin'].includes(path) ? path : '/';
+            if ((path === '/admin' || path === '/member') && !localStorage.getItem('token')) return this.navigate('/login', true);
+            this.currentPath = ['/login', '/admin', '/member'].includes(path) ? path : '/';
             if (this.currentPath === '/') this.loadLandingData(); else this.loading = false;
             if (this.currentPath === '/admin') this.initAdminDashboard();
+            if (this.currentPath === '/member') this.loadMemberArea();
+        },
+        scrollToSection(id) {
+            if (id === 'app') return window.scrollTo({ top: 0, behavior: 'smooth' });
+            const element = document.getElementById(id);
+            if (!element) return;
+            const offset = 24;
+            const top = element.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
         },
         navigate(path, replace = false) { replace ? history.replaceState({}, '', path) : history.pushState({}, '', path); this.syncPath(); window.scrollTo(0, 0); },
+        switchMemberTab(tab) { this.memberTab = tab; },
         openWebsite() { window.open('/', '_blank'); },
+        autoDbName(appName) {
+            const cleanAppName = String(appName || '').trim() || 'aplikasi';
+            return cleanAppName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'aplikasi';
+        },
         formatPrice(value) { return new Intl.NumberFormat('id-ID').format(Number(value) || 0); },
         hasDiscount(product) { return Number(product && product.originalPrice) > Number(product && product.price); },
         discountPercent(product) {
@@ -590,6 +859,7 @@ new Vue({
                 buyerName: '',
                 buyerEmail: '',
                 buyerWhatsapp: '',
+                transferAccountName: '',
                 paymentProof: null
             };
             if (this.$refs.paymentProofInput) this.$refs.paymentProofInput.value = '';
@@ -606,10 +876,16 @@ new Vue({
         async api(url, options = {}) {
             const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
             const headers = { ...(!isFormData && options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers };
-            if (url.startsWith('/api/admin')) headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+            const requiresAuth = url.startsWith('/api/admin') || url.startsWith('/api/member') || url.startsWith('/api/auth/me') || url.startsWith('/api/auth/change-password');
+            if (requiresAuth) headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
             const res = await fetch(url, { ...options, headers });
             const data = await res.json().catch(() => ({}));
-            if (res.status === 401 || res.status === 403) { localStorage.removeItem('token'); this.navigate('/login', true); throw new Error('Sesi berakhir'); }
+            if (requiresAuth && (res.status === 401 || res.status === 403)) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+                this.navigate('/login', true);
+                throw new Error(data.message || 'Sesi berakhir');
+            }
             if (!res.ok) throw new Error(data.message || data.error || 'Permintaan gagal');
             return data;
         },
@@ -639,24 +915,112 @@ new Vue({
                 body.append('buyerName', this.formCheckout.buyerName);
                 body.append('buyerEmail', this.formCheckout.buyerEmail);
                 body.append('buyerWhatsapp', this.formCheckout.buyerWhatsapp);
+                body.append('transferAccountName', this.formCheckout.transferAccountName);
                 body.append('paymentProof', this.formCheckout.paymentProof);
                 const result = await this.api('/api/public/checkout', { method: 'POST', body });
                 this.showCheckoutModal = false;
                 await this.loadLandingData();
-                Swal.fire({ title: 'Pesanan tercatat', html: `Silakan transfer <b>Rp ${this.formatPrice(result.transaction.amount)}</b> ke <b>${result.payment.name} ${result.payment.number}</b> a.n. ${result.payment.owner}.`, icon: 'success', confirmButtonColor: '#153f2e' });
+                Swal.fire({ title: 'Terima kasih', text: 'Pemesanan Anda sudah kami terima. Mohon tunggu admin untuk memverifikasi pembayaran Anda.', icon: 'success', confirmButtonColor: '#153f2e' });
             }
             catch (err) { Swal.fire('Pemesanan gagal', err.message, 'error'); }
             finally { this.submitting = false; }
         },
         async submitLogin() {
             this.submitting = true;
-            try { const data = await this.api('/api/auth/login', { method: 'POST', body: JSON.stringify(this.formLogin) }); localStorage.setItem('token', data.token); this.navigate('/admin', true); }
-            catch (err) { Swal.fire('Tidak dapat masuk', err.message, 'error'); }
+            try {
+                const data = await this.api('/api/auth/login', { method: 'POST', body: JSON.stringify(this.formLogin) });
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('role', data.role);
+                this.authUser = { username: data.username, role: data.role, name: data.name, email: data.email };
+                await Swal.fire({ title: data.message || 'Login berhasil', icon: 'success', confirmButtonColor: '#153f2e', timer: 1200, showConfirmButton: false });
+                this.navigate(data.role === 'ADMIN' ? '/admin' : '/member', true);
+            }
+            catch (err) {
+                const message = err.message || 'Login gagal';
+                const isWarning = /belum aktif|menunggu approval|menunggu verifikasi/i.test(message);
+                Swal.fire({
+                    title: isWarning ? 'Peringatan' : 'Login gagal',
+                    text: message,
+                    icon: isWarning ? 'warning' : 'error',
+                    confirmButtonColor: '#153f2e'
+                });
+            }
             finally { this.submitting = false; }
         },
-        logout() { localStorage.removeItem('token'); this.navigate('/login', true); },
-        switchAdminTab(tab) { this.adminTab = tab; this.sidebarOpen = false; if (tab === 'settings') this.fetchSettings(); if (tab === 'transactions') this.fetchTransactions(1); if (tab === 'dashboard') this.$nextTick(this.renderCharts); },
-        initAdminDashboard() { this.adminTab = 'dashboard'; this.$nextTick(this.renderCharts); },
+        logout() { localStorage.removeItem('token'); localStorage.removeItem('role'); this.navigate('/login', true); },
+        resetProfileForm() { this.profileForm = { currentPassword: '', newPassword: '', confirmPassword: '' }; },
+        async loadAuthUser() {
+            try {
+                const data = await this.api('/api/auth/me');
+                this.authUser = data.user || {};
+            } catch (err) { if (err.message !== 'Sesi berakhir') Swal.fire('Gagal memuat profil', err.message, 'error'); }
+        },
+        async loadMemberArea() {
+            try {
+                await this.loadAuthUser();
+                const data = await this.api('/api/member/me');
+                this.member.user = data.user || {};
+                this.member.transactions = data.transactions || [];
+            } catch (err) { if (err.message !== 'Sesi berakhir') Swal.fire('Gagal memuat area member', err.message, 'error'); }
+        },
+        async changePassword() {
+            this.submitting = true;
+            try {
+                const data = await this.api('/api/auth/change-password', { method: 'POST', body: JSON.stringify(this.profileForm), headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+                this.resetProfileForm();
+                Swal.fire({ title: data.message || 'Password berhasil diperbarui', icon: 'success', confirmButtonColor: '#153f2e' });
+            } catch (err) {
+                Swal.fire({ title: err.message || 'Gagal mengganti password', icon: 'error', confirmButtonColor: '#153f2e' });
+            } finally { this.submitting = false; }
+        },
+        async generatePrompt(type) {
+            this.submitting = true;
+            try {
+                const form = this.member.forms[type] || {};
+                const data = await this.api('/api/member/generate-prompt', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        type,
+                        appName: form.appName
+                    })
+                });
+                this.member.prompts[type] = data.prompt || '';
+            } catch (err) { Swal.fire('Gagal generate prompt', err.message, 'error'); }
+            finally { this.submitting = false; }
+        },
+        resolveDbName(appName) {
+            const cleanAppName = String(appName || '').trim() || 'Aplikasi Laundry';
+            const cleanDbName = this.autoDbName(cleanAppName) || 'laundry';
+            return { appName: cleanAppName, dbName: cleanDbName };
+        },
+        buildTemplate(type) {
+            const form = this.member.forms[type] || {};
+            const resolved = this.resolveDbName(form.appName);
+            if (!resolved.appName) return Swal.fire('Nama aplikasi wajib diisi', '', 'warning');
+            const templates = {
+                build: `Buatkan aplikasi ${resolved.appName} menggunakan Node Js 1 file, Sequelize, dan MySQL. Nama database ditentukan otomatis menjadi ${resolved.dbName}, jadi siapkan database MySQL dengan nama tersebut. Frontend wajib menggunakan index.html di folder public dengan Vue JS, Bootstrap 5 CDN, vanilla JavaScript, dan Chart.js. Semua data harus dinamis dari API. Wajib ada auth, search, limit, pagination, SweetAlert, dashboard profesional, dan responsive mobile.`,
+                system: `Buatkan kebutuhan sistem lengkap untuk aplikasi ${resolved.appName}. Nama database ditentukan otomatis menjadi ${resolved.dbName}, jadi siapkan database MySQL dengan nama tersebut. Jelaskan kebutuhan user role, modul utama, backend, frontend, database, auth, laporan, dashboard, API, validasi, upload file bila dibutuhkan, deployment, dan keamanan dasar. Susun rapi agar bisa langsung dipakai sebagai acuan pengembangan.`
+            };
+            this.member.templates[type] = templates[type] || '';
+        },
+        async copyPrompt(type) {
+            try {
+                await navigator.clipboard.writeText((this.member.prompts[type] || '').trim());
+                Swal.fire({ title: 'Prompt disalin', icon: 'success', timer: 1000, showConfirmButton: false });
+            } catch (err) {
+                Swal.fire('Gagal copy', err.message, 'error');
+            }
+        },
+        async copyTemplate(type) {
+            try {
+                await navigator.clipboard.writeText((this.member.templates[type] || '').trim());
+                Swal.fire({ title: 'Template disalin', icon: 'success', timer: 1000, showConfirmButton: false });
+            } catch (err) {
+                Swal.fire('Gagal copy', err.message, 'error');
+            }
+        },
+        switchAdminTab(tab) { this.adminTab = tab; this.sidebarOpen = false; if (tab === 'settings') this.fetchSettings(); if (tab === 'transactions') this.fetchTransactions(1); if (tab === 'dashboard') this.$nextTick(this.renderCharts); if (tab === 'profile') this.loadAuthUser(); },
+        initAdminDashboard() { this.adminTab = 'dashboard'; this.loadAuthUser(); this.$nextTick(this.renderCharts); },
         removeCmsProduct(index) { if (this.cmsSettings.products.length > 1) this.cmsSettings.products.splice(index, 1); },
         async deleteCmsProduct(product, index) {
             if (this.cmsSettings.products.length <= 1) return;

@@ -4,6 +4,7 @@ const express = require('express');
 const { Sequelize, DataTypes, Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
 const path = require('path');
 const multer = require('multer');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
@@ -15,6 +16,16 @@ const R2_BUCKET = process.env.R2_BUCKET || '';
 const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID || '';
 const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY || '';
 const R2_PUBLIC_BASE_URL = (process.env.R2_PUBLIC_BASE_URL || '').replace(/\/$/, '');
+const EMAIL_USER = process.env.EMAIL_USER || '';
+const EMAIL_PASS = process.env.EMAIL_PASS || '';
+const requiredDbEnv = ['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PORT'];
+const missingDbEnv = requiredDbEnv.filter(key => !String(process.env[key] || '').trim());
+const hasDbPasswordKey = Object.prototype.hasOwnProperty.call(process.env, 'DB_PASSWORD');
+
+if (missingDbEnv.length || !hasDbPasswordKey) {
+    const missingKeys = !hasDbPasswordKey ? [...missingDbEnv, 'DB_PASSWORD'] : missingDbEnv;
+    throw new Error(`Environment database belum lengkap: ${missingKeys.join(', ')}`);
+}
 
 const defaultLanding = {
     brandName: 'Ruang Tumbuh AI',
@@ -47,12 +58,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // --- DATABASE CONNECTION ---
 const sequelize = new Sequelize(
-    process.env.DB_NAME || 'smartbisnis',
-    process.env.DB_USER || 'root',
-    process.env.DB_PASSWORD || 'alen',
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
     {
-    host: process.env.DB_HOST || 'localhost',
-    port: Number(process.env.DB_PORT) || 3306,
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
     dialect: 'mysql',
     logging: false
     }
@@ -61,6 +72,10 @@ const sequelize = new Sequelize(
 // --- MODELS ---
 const User = sequelize.define('User', {
     username: { type: DataTypes.STRING, unique: true, allowNull: false },
+    email: { type: DataTypes.STRING, unique: true, allowNull: false },
+    name: { type: DataTypes.STRING, allowNull: false, defaultValue: '' },
+    role: { type: DataTypes.ENUM('ADMIN', 'CUSTOMER'), allowNull: false, defaultValue: 'CUSTOMER' },
+    isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     password: { type: DataTypes.STRING, allowNull: false }
 });
 
@@ -83,6 +98,8 @@ const Transaction = sequelize.define('Transaction', {
     buyerName: { type: DataTypes.STRING, allowNull: false },
     buyerEmail: { type: DataTypes.STRING, allowNull: false },
     buyerWhatsapp: { type: DataTypes.STRING, allowNull: false },
+    transferAccountName: { type: DataTypes.STRING, allowNull: false, defaultValue: '' },
+    userId: { type: DataTypes.INTEGER, allowNull: true },
     productId: { type: DataTypes.INTEGER, allowNull: true },
     productTitle: { type: DataTypes.STRING, allowNull: false, defaultValue: '' },
     paymentMethod: { type: DataTypes.STRING, allowNull: false, defaultValue: '' },
@@ -103,6 +120,10 @@ const authenticateToken = (req, res, next) => {
         req.user = user;
         next();
     });
+};
+const requireAdmin = (req, res, next) => {
+    if (req.user.role !== 'ADMIN') return res.status(403).json({ message: 'Akses admin ditolak' });
+    next();
 };
 
 const getJsonSetting = async (key, fallback) => {
@@ -162,6 +183,11 @@ const s3 = hasR2Config ? new S3Client({
     }
 }) : null;
 const buildPublicFileUrl = key => `${R2_PUBLIC_BASE_URL}/${key}`;
+const hasEmailConfig = Boolean(EMAIL_USER && EMAIL_PASS);
+const mailer = hasEmailConfig ? nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: EMAIL_USER, pass: EMAIL_PASS }
+}) : null;
 const fileExtensionFromName = name => {
     const ext = path.extname(String(name || '')).toLowerCase();
     return ext && ext.length <= 10 ? ext : '.jpg';
@@ -177,6 +203,69 @@ const uploadProofToR2 = async file => {
     }));
     return buildPublicFileUrl(key);
 };
+const generateRandomPassword = () => Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(2, 6).toUpperCase();
+const resolveDbName = ({ appName, dbName }) => {
+    const safeAppName = cleanText(appName, 120) || 'Aplikasi Laundry';
+    const safeDbName = cleanText(dbName, 60) || safeAppName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'laundry';
+    return { safeAppName, safeDbName };
+};
+const generateCustomerPrompt = ({ type, appName, dbName }) => {
+    const { safeAppName, safeDbName } = resolveDbName({ appName, dbName });
+    const prompts = {
+        menu: `Kebutuhan Aplikasi ${safeAppName} apa saja menunya ?, Buatkan dalam Bentuk Pargraf, jangan cerita namun menunya saja`,
+        build: `Buatkan aplikasi ${safeAppName} menggunakan Node Js 1 file, sequelize dengan database mysql dengan nama ${safeDbName}, dan secara lengkap sesuai intruksi.
+
+Buatkan FE menggunakan index.html di dalam folder public, Vue JS, Bootstrap 5 CDN berikut:
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+Gunakan vanilla JavaScript dan Chart.js untuk dashboard secara profesional, wajib ada Bar Chart, Line Chart, dan Area Chart. Buat FE responsive terhadap mobile.
+Gunakan SweetAlert untuk konfirmasi dan notifikasi sukses maupun error.
+Buatkan fitur search, limit, dan pagination secara lengkap di backend dan frontend.
+Buatkan auth secara lengkap, dan buatkan username dan password awalnya.
+Jangan ada data static, saya mau dinamis semua dari API.
+
+Gunakan:
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+Buatkan yang benar, lengkap, dan siap dipakai.`,
+        fix: `Jika terjadi error pada aplikasi ${safeAppName}, perbaiki secara penuh file dari kode yang error dan tulis ulang lengkap. Jangan ada yang dikurangi dari kode sebelumnya.`,
+        improve: `Jika menu atau fitur aplikasi ${safeAppName} masih kurang lengkap, buat lebih lengkap lagi. Jangan ada kode yang dikurangi dari kode sebelumnya dan jangan ada data static, saya mau dinamis semua dari API. Tetap gunakan database mysql dengan nama ${safeDbName}.`
+    };
+    return { prompt: prompts[type] || prompts.menu, safeAppName, safeDbName };
+};
+const sendEmailSafe = async ({ to, subject, html }) => {
+    if (!mailer) return;
+    await mailer.sendMail({ from: EMAIL_USER, to, subject, html });
+};
+const sendCustomerCredentialEmail = async ({ email, name, password, productTitle }) => {
+    await sendEmailSafe({
+        to: email,
+        subject: 'Akun Anda sudah dibuat - menunggu approval admin',
+        html: `
+            <h2>Halo ${name || email},</h2>
+            <p>Pesanan untuk <b>${productTitle}</b> sudah kami terima.</p>
+            <p>Akun customer Anda sudah dibuat dengan detail berikut:</p>
+            <ul>
+                <li>Email / Username: <b>${email}</b></li>
+                <li>Password: <b>${password}</b></li>
+            </ul>
+            <p>Akun belum aktif. Admin harus menyetujui pembayaran terlebih dahulu sebelum akun bisa digunakan untuk login.</p>
+        `
+    });
+};
+const sendCustomerApprovedEmail = async ({ email, name }) => {
+    await sendEmailSafe({
+        to: email,
+        subject: 'Akun Anda sudah aktif',
+        html: `
+            <h2>Halo ${name || email},</h2>
+            <p>Pembayaran Anda sudah disetujui.</p>
+            <p>Akun Anda sekarang aktif dan sudah bisa digunakan untuk login dengan email dan password yang sebelumnya dikirim.</p>
+        `
+    });
+};
 
 // --- API ROUTES ---
 
@@ -186,14 +275,56 @@ app.post('/api/auth/login', async (req, res) => {
     const password = String(req.body.password || '');
     if (!username || !password) return res.status(400).json({ message: 'Username dan password wajib diisi' });
     try {
-        const user = await User.findOne({ where: { username } });
+        const user = await User.findOne({ where: { [Op.or]: [{ username }, { email: username.toLowerCase() }] } });
         if (!user) return res.status(404).json({ message: 'User tidak ditemukan' });
 
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) return res.status(400).json({ message: 'Password salah' });
+        if (!user.isActive) return res.status(403).json({ message: 'Akun belum aktif. Menunggu approval admin.' });
 
-        const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1d' });
-        res.json({ token, username: user.username });
+        const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+        res.json({ message: 'Login berhasil', token, username: user.username, role: user.role, name: user.name, email: user.email });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/auth/me', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id);
+        if (!user) return res.status(404).json({ message: 'User tidak ditemukan' });
+        res.json({
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                name: user.name,
+                role: user.role,
+                isActive: user.isActive
+            }
+        });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/auth/change-password', authenticateToken, async (req, res) => {
+    const currentPassword = String(req.body.currentPassword || '');
+    const newPassword = String(req.body.newPassword || '');
+    const confirmPassword = String(req.body.confirmPassword || '');
+    try {
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return res.status(400).json({ message: 'Semua field password wajib diisi' });
+        }
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: 'Password baru minimal 6 karakter' });
+        }
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ message: 'Konfirmasi password baru tidak sama' });
+        }
+        const user = await User.findByPk(req.user.id);
+        if (!user) return res.status(404).json({ message: 'User tidak ditemukan' });
+        const validPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!validPassword) return res.status(400).json({ message: 'Password saat ini salah' });
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await user.update({ password: hashedPassword });
+        res.json({ message: 'Password berhasil diperbarui' });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
@@ -218,11 +349,12 @@ app.post('/api/public/checkout', upload.single('paymentProof'), async (req, res)
     const buyerName = cleanText(req.body.buyerName, 120);
     const buyerEmail = cleanText(req.body.buyerEmail, 160).toLowerCase();
     const buyerWhatsapp = cleanText(req.body.buyerWhatsapp, 30);
+    const transferAccountName = cleanText(req.body.transferAccountName, 120);
     const productId = Number.parseInt(req.body.productId, 10);
     const paymentMethodId = cleanText(req.body.paymentMethodId, 80);
     try {
         if (!hasR2Config) return res.status(500).json({ message: 'Upload bukti pembayaran belum dikonfigurasi' });
-        if (!buyerName || !/^\S+@\S+\.\S+$/.test(buyerEmail) || !/^[+\d][\d\s-]{7,}$/.test(buyerWhatsapp)) {
+        if (!buyerName || !transferAccountName || !/^\S+@\S+\.\S+$/.test(buyerEmail) || !/^[+\d][\d\s-]{7,}$/.test(buyerWhatsapp)) {
             return res.status(400).json({ message: 'Data pembeli belum lengkap atau formatnya tidak valid' });
         }
         if (!req.file) return res.status(400).json({ message: 'Bukti pembayaran wajib diupload' });
@@ -234,11 +366,28 @@ app.post('/api/public/checkout', upload.single('paymentProof'), async (req, res)
         const payment = paymentMethods.find(item => item.id === paymentMethodId && item.isActive !== false);
         if (!payment) return res.status(400).json({ message: 'Metode pembayaran tidak tersedia' });
         const paymentProofUrl = await uploadProofToR2(req.file);
+        let customer = await User.findOne({ where: { email: buyerEmail } });
+        let generatedPassword = '';
+
+        if (!customer) {
+            generatedPassword = generateRandomPassword();
+            const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+            customer = await User.create({
+                username: buyerEmail,
+                email: buyerEmail,
+                name: buyerName,
+                role: 'CUSTOMER',
+                isActive: false,
+                password: hashedPassword
+            });
+        }
 
         const tx = await Transaction.create({
             buyerName,
             buyerEmail,
             buyerWhatsapp,
+            transferAccountName,
+            userId: customer.id,
             productId: product.id,
             productTitle: product.title,
             paymentMethod: payment.name,
@@ -249,9 +398,12 @@ app.post('/api/public/checkout', upload.single('paymentProof'), async (req, res)
         });
 
         await product.decrement('stock', { by: 1 });
+        if (generatedPassword) {
+            await sendCustomerCredentialEmail({ email: buyerEmail, name: buyerName, password: generatedPassword, productTitle: product.title });
+        }
 
         res.json({
-            message: 'Pemesanan berhasil, silakan transfer',
+            message: generatedPassword ? 'Pemesanan berhasil. Cek email untuk akun login Anda.' : 'Pemesanan berhasil, akun Anda sudah terdaftar. Menunggu approval admin.',
             transaction: tx,
             payment
         });
@@ -259,7 +411,7 @@ app.post('/api/public/checkout', upload.single('paymentProof'), async (req, res)
 });
 
 // Admin: Ambil Pengaturan CMS
-app.get('/api/admin/settings', authenticateToken, async (req, res) => {
+app.get('/api/admin/settings', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const paymentMethods = await getJsonSetting('payment_methods', defaultPaymentMethods);
         const content = await getJsonSetting('landing_content', defaultLanding);
@@ -273,7 +425,7 @@ app.get('/api/admin/settings', authenticateToken, async (req, res) => {
 });
 
 // Admin: Simpan Pengaturan CMS
-app.post('/api/admin/settings', authenticateToken, async (req, res) => {
+app.post('/api/admin/settings', authenticateToken, requireAdmin, async (req, res) => {
     const { paymentMethods = [], products = [], content = {} } = req.body;
     try {
         const safeContent = Object.keys(defaultLanding).reduce((result, key) => {
@@ -314,7 +466,7 @@ app.post('/api/admin/settings', authenticateToken, async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/api/admin/products', authenticateToken, async (req, res) => {
+app.post('/api/admin/products', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const product = sanitizeProduct(req.body);
         if (!product) return res.status(400).json({ message: 'Data produk tidak valid' });
@@ -331,7 +483,7 @@ app.post('/api/admin/products', authenticateToken, async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.put('/api/admin/products/:id', authenticateToken, async (req, res) => {
+app.put('/api/admin/products/:id', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const product = sanitizeProduct({ ...req.body, id: req.params.id });
         if (!product) return res.status(400).json({ message: 'Data produk tidak valid' });
@@ -350,7 +502,7 @@ app.put('/api/admin/products/:id', authenticateToken, async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.delete('/api/admin/products/:id', authenticateToken, async (req, res) => {
+app.delete('/api/admin/products/:id', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const deleted = await Course.destroy({ where: { id: req.params.id } });
         if (!deleted) return res.status(404).json({ message: 'Produk tidak ditemukan' });
@@ -359,7 +511,7 @@ app.delete('/api/admin/products/:id', authenticateToken, async (req, res) => {
 });
 
 // Admin: Ambil Transaksi (Search, Limit, Pagination Lengkap)
-app.get('/api/admin/transactions', authenticateToken, async (req, res) => {
+app.get('/api/admin/transactions', authenticateToken, requireAdmin, async (req, res) => {
     let { page, limit, search, status } = req.query;
     page = parseInt(page) || 1;
     limit = Math.min(parseInt(limit) || 10, 100);
@@ -396,19 +548,62 @@ app.get('/api/admin/transactions', authenticateToken, async (req, res) => {
 });
 
 // Admin: Aksi Ganti Status Transaksi
-app.patch('/api/admin/transactions/:id', authenticateToken, async (req, res) => {
+app.patch('/api/admin/transactions/:id', authenticateToken, requireAdmin, async (req, res) => {
     try {
         if (!['PENDING', 'APPROVED', 'REJECTED'].includes(req.body.status)) {
             return res.status(400).json({ message: 'Status tidak valid' });
         }
-        const [updated] = await Transaction.update({ status: req.body.status }, { where: { id: req.params.id } });
-        if (!updated) return res.status(404).json({ message: 'Transaksi tidak ditemukan' });
+        const tx = await Transaction.findByPk(req.params.id);
+        if (!tx) return res.status(404).json({ message: 'Transaksi tidak ditemukan' });
+        await tx.update({ status: req.body.status });
+        if (req.body.status === 'APPROVED' && tx.userId) {
+            const user = await User.findByPk(tx.userId);
+            if (user) {
+                await user.update({ isActive: true });
+                await sendCustomerApprovedEmail({ email: user.email, name: user.name });
+            }
+        }
         res.json({ message: 'Status transaksi berhasil diperbarui' });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+app.get('/api/member/me', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id);
+        if (!user || user.role !== 'CUSTOMER') return res.status(403).json({ message: 'Akses member ditolak' });
+        const transactions = await Transaction.findAll({
+            where: { userId: user.id },
+            order: [['createdAt', 'DESC']],
+            attributes: ['id', 'productTitle', 'status', 'amount', 'createdAt']
+        });
+        res.json({
+            user: { id: user.id, name: user.name, email: user.email, username: user.username, isActive: user.isActive },
+            transactions
+        });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/member/generate-prompt', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id);
+        if (!user || user.role !== 'CUSTOMER' || !user.isActive) return res.status(403).json({ message: 'Akun member belum aktif' });
+        const type = cleanText(req.body.type, 20);
+        const appName = cleanText(req.body.appName, 120);
+        const dbName = cleanText(req.body.dbName, 60);
+        if (!appName) return res.status(400).json({ message: 'Nama aplikasi wajib diisi' });
+        if (!['menu', 'build', 'fix', 'improve'].includes(type)) return res.status(400).json({ message: 'Tipe prompt tidak valid' });
+        const generated = generateCustomerPrompt({ type, appName, dbName });
+        res.json({
+            type,
+            appName: generated.safeAppName,
+            dbName: generated.safeDbName,
+            prompt: generated.prompt
+        });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // Admin: Dashboard Analytics (100% DINAMIS DARI DATABASE)
-app.get('/api/admin/dashboard-stats', authenticateToken, async (req, res) => {
+app.get('/api/admin/dashboard-stats', authenticateToken, requireAdmin, async (req, res) => {
     try {
         // 1. Hitung Total Omset Riil (Hanya yang APPROVED)
         const totalRevenue = await Transaction.sum('amount', { where: { status: 'APPROVED' } }) || 0;
@@ -497,10 +692,12 @@ sequelize.sync({ alter: true }).then(async () => {
     const userExist = await User.findOne({ where: { username: 'admin' } });
     if (!userExist) {
         const hashedPassword = await bcrypt.hash('admin123', 10);
-        await User.create({ username: 'admin', password: hashedPassword });
+        await User.create({ username: 'admin', email: 'admin@local.test', name: 'Administrator', role: 'ADMIN', isActive: true, password: hashedPassword });
         console.log('======================================================');
         console.log('==> CMS Default Akun: User: admin | Pass: admin123 <==');
         console.log('======================================================');
+    } else if (userExist.role !== 'ADMIN' || !userExist.isActive || !userExist.email) {
+        await userExist.update({ email: userExist.email || 'admin@local.test', name: userExist.name || 'Administrator', role: 'ADMIN', isActive: true });
     }
     const courseExists = await Course.count();
     if (!courseExists) {
